@@ -24,6 +24,9 @@
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
@@ -753,20 +756,24 @@ Thank you so much for taking the time and hearing me.
         </div>
       </div>
 
-      <form action="forms/contact.php" method="post" role="form" class="php-email-form mt-4">
+      <form action="" onsubmit="mail()" id="submit-form" role="form" class="php-email-form mt-4">
         <div class="row">
           <div class="col-md-6 form-group">
-            <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+            <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" >
+            <span class="text-danger" id="nameError"></span>
           </div>
           <div class="col-md-6 form-group mt-3 mt-md-0">
-            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" >
+            <span class="text-danger" id="mailError"></span>
           </div>
         </div>
         <div class="form-group mt-3">
-          <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+          <input type="number" class="form-control" name="number" id="phone" placeholder="Phone Number" >
+          <span class="text-danger" id="phoneError"></span>
         </div>
         <div class="form-group mt-3">
-          <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+          <textarea class="form-control" name="message" rows="5"    id="message" placeholder="Message" ></textarea>
+          <span class="text-danger" id="messageError"></span>
         </div>
         <div class="my-3">
           <div class="loading">Loading</div>
@@ -787,6 +794,15 @@ Thank you so much for taking the time and hearing me.
     Designed by <a href="https://gladsonms.github.io/Personal-site-week1/">Gladson M S</a>
   </div>
 
+
+<style>
+  input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+</style>
+
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
@@ -796,8 +812,184 @@ Thank you so much for taking the time and hearing me.
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
 
+  
+
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script>
+    var form = document.getElementById('submit-form')
+    form.addEventListener('submit',(e)=>{e.preventDefault()})
+    var inputBox = document.getElementById("phone");
+
+     var invalidChars = [
+     "-",
+     "+",
+     "e",
+     ];
+
+     inputBox.addEventListener("input", function() {
+     this.value = this.value.replace(/[e\+\-]/gi, "");
+     });
+
+     inputBox.addEventListener("keydown", function(e) {
+     if (invalidChars.includes(e.key)) {
+         e.preventDefault();
+     }
+     });
+ </script>   
+ <script>
+   
+////To check Name  in form
+var nameField = document.getElementById('name')
+var validname=false;
+
+
+nameField.addEventListener('input', () => {
+    var name = nameField.value
+    var nameRegex=/^[a-zA-Z ]+$/ 
+
+    if(name.length==0){
+        text="Please Enter your Name";
+        nameError.innerHTML = text;
+        validname=false;
+    } 
+    else if(name.length<5){
+        console.log(name.length);
+        nameError.innerHTML="Name should be more than 4 Characters"
+        validname=false;
+    }
+    else if(name.includes('  ')){
+        nameError.innerHTML="Name should not contain 2 concecutive spaces"
+        validname=false;
+
+
+    }
+    else if(!name.match(nameRegex))
+    {
+        text="Name Should not contain numeric value"
+        nameError.innerHTML=text;
+        return false;
+    }
+    else{
+
+        validname=true;
+        nameError.innerHTML=" ";
+   
+}
+})
+
+////To Check Number is valid or not
+var phoneField = document.getElementById('phone')
+var validphone=false;
+phoneField.addEventListener('input',()=>{
+    var phone=phoneField.value
+    if(isNaN(phone) || phone.length==0){
+         validphone=false;
+        text="This field should not be blank";
+        phoneError.innerHTML = text;
+   
+} else if(isNaN(phone) || phone.length!=10){
+     validphone=false;
+    text="Please Enter Valid Number";
+    phoneError.innerHTML = text;
+   
+}else{
+    phoneError.innerHTML=" ";
+     validphone=true;
+}     
+})
+
+//////To check email vlaid or not
+var emailField = document.getElementById('email')
+var validmail=false;
+emailField.addEventListener('input',()=>{
+    var email=emailField.value
+    var regexEmail = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+    if(email.length==0){
+        text="This field cannot be empty";
+         validmail=false;
+         mailError.innerHTML = text;
+       
+    }else if (!email.match(regexEmail)) {
+        mailError.innerHTML = 'This email id is not valid.'
+        validmail=false;
+      } else {
+        validmail=true;
+        mailError.innerHTML = ''
+      
+    }
+    
+})
+//////To check message is on or present or not
+var messageField=document.getElementById('message')
+var validmessage=false;
+messageField.addEventListener('input',()=>{
+    var message=messageField.value
+    if(message.length<=25){
+        validmessage=false;
+        text="Please Enter More Than 25 Characters"
+        messageError.innerHTML = text;
+       
+    }else{
+        validmessage=true;
+        text=" "
+        messageError.innerHTML=text;
+        
+    }
+})
+
+
+  //////To check email///////
+var emailInput = document.getElementById('email')
+var validmail=false;
+emailInput.addEventListener('input',()=>{
+    var email=emailInput.value
+    var regexEmail = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+    if(email.length==0){
+        text="This field cannot be empty";
+         validmail=false;
+         mailError.innerHTML = text;
+       
+    }else if (!email.match(regexEmail)) {
+        mailError.innerHTML = 'This email id is not valid.'
+        validmail=false;
+      } else {
+        validmail=true;
+        mailError.innerHTML = ''
+      
+    }
+    
+})
+    
+function mail() {
+    
+    if(validname==true && validphone==true && validmail==true && validmessage==true){
+        $.ajax({
+            url:"https://script.google.com/macros/s/AKfycbxqeL4Dw3JtyLmmzW0AXjJDTxQtmQ8Sc0ZGTn_o2raFt_gNhJUOrJcW4l8XEfRY5byu/exec",
+            data:$("#submit-form").serialize(),
+            method:"post",
+            success:function (response){
+                alert("Form submitted successfully")
+                window.location.reload()
+                //window.location.href="https://google.com"
+            },
+            error:function (err){
+                alert("Something Error")
+
+            }
+        })
+    }
+    else{
+        nameError.innerHTML="Please Enter this field ";
+        mailError.innerHTML = "Please Enter this field ";
+        phoneError.innerHTML="Please Enter this field";
+        messageError.innerHTML="Please Enter this field ";
+
+
+    }
+}
+    
+ </script>
 
 </body>
 
